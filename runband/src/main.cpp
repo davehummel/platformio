@@ -1,12 +1,15 @@
 #include "Arduino.h"
-#include "Battery.h"
-#include "Mode.h"
-#include "Settings.h"
+#include "battery.h"
+#include "mode.h"
 #include "flashS25FL127_spi.h"
 #include "wire.h"
 #include <FastLED.h>
 #include <RTCZero.h>
 #include <SPI.h>
+#include "flash.h"
+#include "Settings.h"
+#include "sounds.h"
+#include "timer.h"
 #include <SparkFun_I2C_GPS_Arduino_Library.h>
 #include <TinyGPS++.h>
 
@@ -15,7 +18,6 @@
 #define SND_EN1 A0
 #define SND_EN2 A1
 #define SND_DIN 11
-
 
 #define NEO_PIN 10
 #define NUM_LEDS 18
@@ -26,13 +28,17 @@
 I2CGPS myI2CGPS; // Hook object to the library
 TinyGPSPlus gps; // Declare gps object
 CRGB leds[NUM_LEDS];
-Settings settings;
+Flash flash;
+Settings settings(&flash);
 Mode mode;
-RTCZero rtc; // Create RTC object
+RTCZero rtc;
+Sounds sounds(SND_DIN);
 Battery battery;
 uint32_t lastInteractionMillis = 0;
 
-void setup() {
+void setup()
+{
+  //sounds.reset();
   Serial.begin(115200);
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
@@ -56,9 +62,11 @@ void setup() {
     delay(100);
   }
 
-  if (myI2CGPS.begin() == false) {
+  if (myI2CGPS.begin() == false)
+  {
     uint16_t i = 0;
-    while (true) {
+    while (true)
+    {
       i++;
       if (i > 20)
         digitalWrite(PWR_SUSTAIN_PIN, LOW);
@@ -73,9 +81,11 @@ void setup() {
   leds[1] = CRGB::Blue;
   FastLED.show();
 
-  if (settings.init() == false) {
+  if (flash.init() == false)
+  {
     uint16_t i = 0;
-    while (true) {
+    while (true)
+    {
       i++;
       if (i > 20)
         digitalWrite(PWR_SUSTAIN_PIN, LOW);
@@ -93,67 +103,100 @@ void setup() {
   FastLED.show();
   delay(300);
   rtc.begin();
-  mode.setResources(&settings,&rtc, &gps, leds, &battery);
+  mode.setResources(&settings, &rtc, &gps, leds, &battery);
+
   mode.setState(Start_Mode);
 }
 
-bool needToTurnOff(void) {
-  if (millis() - lastInteractionMillis > 60000*30)
+bool needToTurnOff(void)
+{
+  if (millis() - lastInteractionMillis > 60000 * 30)
     return true;
 
- if (battery.getPower()<.1)
+  if (battery.getPower() < .1)
     return true;
 
-return false;
+  return false;
 }
 
 uint32_t btn1PressedTime = 0;
 uint32_t btn2PressedTime = 0;
 
-Button_Event checkButtons(void) {
+void playClick(void)
+{
+  // sounds.reset();
+  // sounds.playback[0] = sounds.playback[2] = sounds.playback[4] = 1000;
+  // sounds.play();
+}
+
+Button_Event checkButtons(void)
+{
   bool btn1 = analogRead(PWR_PRESS_PIN) > 1020;
   bool btn2 = digitalRead(ALT_PRESS_PIN);
   digitalWrite(13, btn1);
   uint32_t interactionTime = millis();
-  if (btn1 || btn2) {
+  if (btn1 || btn2)
+  {
     lastInteractionMillis = interactionTime;
   }
 
-  if (!btn1 && btn1PressedTime > 0){
+  if (!btn1 && btn1PressedTime > 0)
+  {
     uint32_t pressTime = interactionTime - btn1PressedTime;
     btn1PressedTime = 0;
-    if (pressTime>=MIN_HOLD_INTERVAL){
+    if (pressTime >= MIN_HOLD_INTERVAL)
+    {
       return Btn1_hold_release;
-    }else{
+    }
+    else
+    {
+      playClick();
       return Btn1_pressed;
     }
-  } else if (btn1) {
-    if (btn1PressedTime>0){
-      uint32_t pressTime = interactionTime - btn1PressedTime ;
-      if (pressTime>MIN_HOLD_INTERVAL){
+  }
+  else if (btn1)
+  {
+    if (btn1PressedTime > 0)
+    {
+      uint32_t pressTime = interactionTime - btn1PressedTime;
+      if (pressTime > MIN_HOLD_INTERVAL)
+      {
         return Btn1_hold;
       }
-    }else{
+    }
+    else
+    {
       btn1PressedTime = interactionTime;
       return Btn_none;
     }
   }
 
-  if (!btn2 && btn2PressedTime > 0){
-    uint32_t pressTime = interactionTime - btn2PressedTime ;
+  if (!btn2 && btn2PressedTime > 0)
+  {
+    uint32_t pressTime = interactionTime - btn2PressedTime;
     btn2PressedTime = 0;
-    if (pressTime>=MIN_HOLD_INTERVAL){
+    if (pressTime >= MIN_HOLD_INTERVAL)
+    {
       return Btn2_hold_release;
-    }else{
+    }
+    else
+    {
+      playClick();
       return Btn2_pressed;
     }
-  } else if (btn2) {
-    if (btn2PressedTime>0){
-      uint32_t pressTime = interactionTime- btn2PressedTime;
-      if (pressTime>MIN_HOLD_INTERVAL){
+  }
+  else if (btn2)
+  {
+    if (btn2PressedTime > 0)
+    {
+      uint32_t pressTime = interactionTime - btn2PressedTime;
+      if (pressTime > MIN_HOLD_INTERVAL)
+      {
         return Btn2_hold;
       }
-    }else{
+    }
+    else
+    {
       btn2PressedTime = interactionTime;
       return Btn_none;
     }
@@ -162,18 +205,22 @@ Button_Event checkButtons(void) {
   return Btn_none;
 }
 
-void loop() {
+void loop()
+{
   uint32_t currentTime = 0;
   uint32_t lastTime = 0;
   bool rtcIsValid = false;
-  while (!needToTurnOff()) {
+  while (!needToTurnOff())
+  {
     while (myI2CGPS.available()) // available() returns the number of new bytes
     {
       gps.encode(myI2CGPS.read()); // Feed the GPS parser
     }
 
-    if (!rtcIsValid) {
-      if (gps.time.isValid()) {
+    if (!rtcIsValid)
+    {
+      if (gps.time.isValid())
+      {
         rtcIsValid = true;
         rtc.setHours(gps.time.minute());
         rtc.setMinutes(gps.time.minute());
@@ -182,15 +229,17 @@ void loop() {
         // Set the date
         rtc.setDay(gps.date.day());
         rtc.setMonth(gps.date.month());
-        rtc.setYear(gps.date.year()-2000);
+        rtc.setYear(gps.date.year() - 2000);
       }
-    } else {
+    }
+    else
+    {
       Serial.print(F("Date: "));
       Serial.print(rtc.getMonth());
       Serial.print(F("/"));
       Serial.print(rtc.getDay());
       Serial.print(F("/"));
-      Serial.print(rtc.getYear()+2000);
+      Serial.print(rtc.getYear() + 2000);
 
       Serial.print((" Time: "));
 
@@ -204,20 +253,24 @@ void loop() {
       Serial.println(); // Done printing time
     }
     Button_Event event = checkButtons();
-    if (event != Btn_none) {
+    if (event != Btn_none)
+    {
       mode.input(event);
     }
     mode.render();
+    sounds.renderSound();
     currentTime = micros();
     uint32_t dif = currentTime - lastTime;
-    if (dif < CYCLE_INTERVAL) {
+    if (dif < CYCLE_INTERVAL)
+    {
       delayMicroseconds(CYCLE_INTERVAL - dif);
       lastTime += CYCLE_INTERVAL;
-    } else {
+    }
+    else
+    {
       lastTime = currentTime;
     }
   }
 
   battery.off();
-
 }
