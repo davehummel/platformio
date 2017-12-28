@@ -47,8 +47,8 @@ void setup() {
     delay(1000);
 
 
-    controller.setOutputStream(&Serial1);
-    controller.setErrorStream(&Serial);
+    controller.setOutputStream(&Serial);
+    controller.setErrorStream(&Serial1);
 
 
 
@@ -86,5 +86,5 @@ controller.run(2,Controller::newString("D CBB 150"),'R',2);
 }
 
 void loop() {
-        controller.loop(&Serial1);
+        controller.loop(&Serial);
 }
