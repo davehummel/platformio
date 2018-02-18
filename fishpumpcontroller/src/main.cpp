@@ -17,6 +17,8 @@ RF24Client rfClient(14,10);
 
 byte clientName[5]  = {DEFCLIENTNAME};
 
+double leftVal,rightVal;
+bool topoffVal;
 
 void reset(double input){
   Serial.println("Message received!");
@@ -42,6 +44,10 @@ void setup()
   digitalWrite(TOPOFF_PUMP, LOW);
   analogWrite(LEFT_PUMP,512);
   analogWrite(RIGHT_PUMP,512);
+
+  leftVal = 150;
+  rightVal = 150;
+  topoffVal = false;
 
   Serial.begin(115200);
 
@@ -86,16 +92,17 @@ void setDigitalPump(uint8_t pin, bool enabled){
 }
 
 elapsedMillis topoffDisableTime = 600000;
+elapsedMillis millisSinceTopoffFalse = 0;
 uint32_t topoffRunningCount = 0;
 uint32_t replyValues = 0;
 void loop()
 {
   if (replyValues == 10){
-    rfClient.sendDouble(0,rfClient.getValue(0));
+    rfClient.sendDouble(0,leftVal);
     delay(1);
-    rfClient.sendDouble(1,rfClient.getValue(1));
+    rfClient.sendDouble(1,rightVal);
     delay(1);
-    rfClient.sendDouble(2,rfClient.getValue(2));
+    rfClient.sendDouble(2,(topoffVal?1:0));
     replyValues = 0;
   }
   replyValues++;
@@ -103,22 +110,37 @@ void loop()
   rfClient.listen();
   delay(100);
 
+  if (topoffVal == true && millisSinceTopoffFalse > 2000){
+    topoffVal = false;
+    rfClient.setValue(2,0);
+  }
+  if (topoffVal == false){
+    millisSinceTopoffFalse = 0;
+  }
+
+
+ if(rfClient.getTimeSinceLastPing()>600000){
+    Serial.println("Lost contact for 10 minutes , restarting!");
+    reset(1);
+  }
   if(rfClient.getTimeSinceLastPing()>10000){
     Serial.println("Lost contact with controller!");
-     setPWMPump(LEFT_PUMP,165);
-     setPWMPump(RIGHT_PUMP,165);
-     setDigitalPump(TOPOFF_PUMP,false);
-  } if(rfClient.getTimeSinceLastPing()>600000){
-      Serial.println("Lost contact for 10 minutes , restarting!");
-      reset(1);
+    leftVal = 150;
+        rfClient.setValue(0,150);
+    rightVal = 150;
+        rfClient.setValue(1,150);
+    topoffVal = false;
+        rfClient.setValue(2,0);
   } else {
-    setPWMPump(LEFT_PUMP,rfClient.getValue(0));
-    setPWMPump(RIGHT_PUMP,rfClient.getValue(1));
+    Serial.print(".");
+    leftVal = rfClient.getValue(0);
+    rightVal = rfClient.getValue(1);
+    topoffVal = rfClient.getValue(2) == 1; // ignore all other values
     if (topoffDisableTime<600000){
-      setDigitalPump(TOPOFF_PUMP, false);
+      topoffVal = false;
+          rfClient.setValue(2,0);
     } else {
-      if (rfClient.getValue(2)>0){
-        setDigitalPump(TOPOFF_PUMP, true);
+      if (topoffVal == true){
         topoffRunningCount+=3;
         if (topoffRunningCount>=600){
           topoffRunningCount = 0;
@@ -126,13 +148,18 @@ void loop()
           topoffDisableTime = 0;
         }
       } else {
-        setDigitalPump(TOPOFF_PUMP, false);
         if (topoffRunningCount>0){
           topoffRunningCount--;
         }
       }
     }
   }
+
+
+  setPWMPump(LEFT_PUMP,leftVal);
+  setPWMPump(RIGHT_PUMP,rightVal);
+  setDigitalPump(TOPOFF_PUMP, topoffVal);
+
   if (Serial.available()>=5){
     if (Serial.read() == '@'){
       uint8_t prefix [4];
