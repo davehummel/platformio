@@ -69,9 +69,11 @@ Serial.println("Starting Controlled Modules");
 
 controller.run(2,Controller::newString("Enable"),'T');
 
+// Connect to the 4 radio devices
 controller.run(2,Controller::newString("CONNECT A 1NOD"),'R');
 controller.run(2,Controller::newString("CONNECT B 2NOD"),'R');
 controller.run(2,Controller::newString("CONNECT C 3NOD"),'R');
+controller.run(2,Controller::newString("CONNECT D 4NOD"),'R');
 
   // Signal startup is complete to listening computer
   controller.schedule(1,2000,0,false,1,Controller::newString("B ZZZ 1 0"),'Z',1);
