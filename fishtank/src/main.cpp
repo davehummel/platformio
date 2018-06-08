@@ -18,7 +18,6 @@
 #include "ControlledThermometer.h"
 #include "ControlledRF24.h"
 
-
 Logger logger;
 
 ControlledOSStatus os;
@@ -27,66 +26,62 @@ ControlledCalc calc;
 
 ControlledLED led;
 
-ControlledRF24 rfClient(25,10);
+ControlledRF24 rfClient(25, 10);
 
-byte thermoIDs[3] = { 0xAD , 0xC5, 0x48 };
-ControlledThermometer thermo(2/*pin 2*/,thermoIDs, 3/* 2 devices*/);
+byte thermoIDs[3] = {0xAD, 0xC5, 0x48};
+ControlledThermometer thermo(2 /*pin 2*/, thermoIDs, 3 /* 2 devices*/);
 
 Controller controller;
 
-
-void setup() {
+void setup()
+{
 
   pinMode(13, OUTPUT);
 
- SPI.setSCK(27);
+  SPI.setSCK(27);
 
   Serial.begin(1000000);
   Serial1.begin(1000000);
 
-    delay(1000);
+  delay(1000);
 
+  controller.setOutputStream(&Serial1);
+  controller.setErrorStream(&Serial);
 
-    controller.setOutputStream(&Serial1);
-    controller.setErrorStream(&Serial);
+  Serial.println("Starting Controlled Modules");
 
+  controller.loadControlled('P', &led);
 
+  controller.loadControlled('Z', &os);
 
-Serial.println("Starting Controlled Modules");
+  controller.loadControlled('C', &calc);
 
-  controller.loadControlled('P',&led);
+  controller.loadControlled('T', &thermo);
 
-  controller.loadControlled('Z',&os);
-
-  controller.loadControlled('C',&calc);
-
-  controller.loadControlled('T',&thermo);
-
-  controller.loadControlled('R',&rfClient);
+  controller.loadControlled('R', &rfClient);
 
   Serial.println("Modules have started!!");
 
+  controller.run(2, Controller::newString("Enable"), 'T');
 
-controller.run(2,Controller::newString("Enable"),'T');
-
-// Connect to the 4 radio devices
-controller.run(2,Controller::newString("CONNECT A 1NOD"),'R');
-controller.run(2,Controller::newString("CONNECT B 2NOD"),'R');
-controller.run(2,Controller::newString("CONNECT C 3NOD"),'R');
-controller.run(2,Controller::newString("CONNECT D 4NOD"),'R');
+  // Connect to the 4 radio devices
+  controller.run(2, Controller::newString("CONNECT A 1NOD"), 'R');
+  controller.run(2, Controller::newString("CONNECT B 2NOD"), 'R');
+  controller.run(2, Controller::newString("CONNECT C 3NOD"), 'R');
+  controller.run(2, Controller::newString("CONNECT D 4NOD"), 'R');
 
   // Signal startup is complete to listening computer
-  controller.schedule(1,2000,0,false,1,Controller::newString("B ZZZ 1 0"),'Z',1);
+  controller.schedule(1, 2000, 0, false, 1, Controller::newString("B ZZZ 1 0"), 'Z', 1);
 
-controller.run(2,Controller::newString("BLK Z 13 1000"),'P');
+  controller.run(2, Controller::newString("BLK Z 13 1000"), 'P');
 
-controller.schedule(5,1000,2000,false,0,Controller::newString("B ZZZ 1"),'P',2);
+  controller.schedule(5, 1000, 2000, false, 0, Controller::newString("B ZZZ 1"), 'P', 2);
 
-controller.run(2,Controller::newString("D CAA 150"),'R',2);
-controller.run(2,Controller::newString("D CBB 150"),'R',2);
-
+  controller.run(2, Controller::newString("D CAA 10"), 'R', 2);
+  controller.run(2, Controller::newString("D CBB 10"), 'R', 2);
 }
 
-void loop() {
-        controller.loop(&Serial1);
+void loop()
+{
+  controller.loop(&Serial1);
 }

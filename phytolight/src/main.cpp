@@ -37,7 +37,7 @@ void loop() {
   if (isOn){
     x=x+1;
     if (x == 60) x = 0;
-    strip.setPixelColor(x, 225*isOn,0, 225*isOn, 100*isOn);
+    strip.setPixelColor(x, 245*isOn,10*isOn, 245*isOn, 150*isOn);
     strip.show();
   }else{
     if (x<60)
