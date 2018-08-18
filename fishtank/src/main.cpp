@@ -48,7 +48,7 @@ void setup()
   controller.setOutputStream(&Serial);
   controller.setErrorStream(&Serial1);
 
-  Serial.println("Starting Controlled Modules");
+  Serial1.println("Starting Controlled Modules");
 
   controller.loadControlled('P', &led);
 
@@ -60,7 +60,7 @@ void setup()
 
   controller.loadControlled('R', &rfClient);
 
-  Serial.println("Modules have started!!");
+  Serial1.println("Modules have started!!");
 
   controller.run(2, Controller::newString("Enable"), 'T');
 
