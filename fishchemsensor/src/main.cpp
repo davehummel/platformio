@@ -247,7 +247,8 @@ void loop()
         in = airSensor.getTVOC();
 
         BMEtempC = co2Sensor.getTemperature();
-        BMEhumid = 0.5 * (pressureSensor.readFloatHumidity() + co2Sensor.getHumidity());
+        BMEhumid = co2Sensor.getHumidity();
+
         delay(100);
         airSensor.setEnvironmentalData(BMEhumid, BMEtempC);
       }

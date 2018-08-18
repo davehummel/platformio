@@ -45,8 +45,8 @@ void setup()
 
   delay(1000);
 
-  controller.setOutputStream(&Serial1);
-  controller.setErrorStream(&Serial);
+  controller.setOutputStream(&Serial);
+  controller.setErrorStream(&Serial1);
 
   Serial.println("Starting Controlled Modules");
 
@@ -83,5 +83,5 @@ void setup()
 
 void loop()
 {
-  controller.loop(&Serial1);
+  controller.loop(&Serial);
 }
