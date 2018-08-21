@@ -91,10 +91,7 @@ void setup()
 
   Serial1.println("Starting control loop");
   uint8_t  c= 0;
-  while (c!='a'){
-    c = Serial.read();
-    Serial.write(c);
-  }
+
 }
 
 void loop()
