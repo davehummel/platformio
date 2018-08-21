@@ -86,11 +86,7 @@ void setup()
   controller.run(2, Controller::newString("D CAA 10"), 'R', 2);
   controller.run(2, Controller::newString("D CBB 10"), 'R', 2);
 
-  for (uint8_t i = 0; i < 20; i++)
-  {
-    digitalWrite(13, i % 2);
-    delay(250);
-  }
+  Serial1.println("Starting control loop");
 }
 
 void loop()
