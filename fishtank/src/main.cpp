@@ -47,9 +47,12 @@ void setup()
   SPI.setSCK(27);
 
   Serial.begin(1000000);
+
   Serial1.begin(1000000);
 
   delay(1000);
+
+  Serial.println("Something!");
 
   controller.setOutputStream(&Serial);
   controller.setErrorStream(&Serial1);
