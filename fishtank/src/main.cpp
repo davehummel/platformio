@@ -38,6 +38,12 @@ void setup()
 
   pinMode(13, OUTPUT);
 
+  for (uint8_t i = 0; i < 20; i++)
+  {
+    digitalWrite(13, i % 2);
+    delay(250);
+  }
+
   SPI.setSCK(27);
 
   Serial.begin(1000000);
