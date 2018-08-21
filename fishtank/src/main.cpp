@@ -26,7 +26,7 @@ ControlledCalc calc;
 
 ControlledLED led;
 
-ControlledRF24 rfClient(25, 10);
+//ControlledRF24 rfClient(25, 10);
 
 byte thermoIDs[3] = {0xAD, 0xC5, 0x48};
 ControlledThermometer thermo(2 /*pin 2*/, thermoIDs, 3 /* 2 devices*/);
@@ -38,12 +38,6 @@ void setup()
 
   pinMode(13, OUTPUT);
 
-  for (uint8_t i = 0; i < 20; i++)
-  {
-    digitalWrite(13, i % 2);
-    delay(250);
-  }
-
   SPI.setSCK(27);
 
   Serial.begin(1000000);
@@ -51,8 +45,6 @@ void setup()
   Serial1.begin(1000000);
 
   delay(1000);
-
-  Serial.println("Something!");
 
   controller.setOutputStream(&Serial);
   controller.setErrorStream(&Serial1);
@@ -67,7 +59,7 @@ void setup()
 
   controller.loadControlled('T', &thermo);
 
-  controller.loadControlled('R', &rfClient);
+  //controller.loadControlled('R', &rfClient);
 
   Serial1.println("Modules have started!!");
 
@@ -90,8 +82,7 @@ void setup()
   controller.run(2, Controller::newString("D CBB 10"), 'R', 2);
 
   Serial1.println("Starting control loop");
-  uint8_t  c= 0;
-
+  uint8_t c = 0;
 }
 
 void loop()
