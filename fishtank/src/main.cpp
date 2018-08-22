@@ -74,7 +74,7 @@ void setup()
   // Signal startup is complete to listening computer
   controller.schedule(1, 2000, 0, false, 1, Controller::newString("B ZZZ 1 0"), 'Z', 1);
 
-  controller.run(2, Controller::newString("BLK Z 13 1000"), 'P');
+  // controller.run(2, Controller::newString("BLK Z 13 1000"), 'P');
 
   controller.schedule(5, 1000, 2000, false, 0, Controller::newString("B ZZZ 1"), 'P', 2);
 
