@@ -82,6 +82,7 @@ void setup()
   controller.run(2, Controller::newString("D CBB 10"), 'R', 2);
 
   Serial1.println("Starting control loop");
+  Serial1.flush();
 }
 
 void loop()
