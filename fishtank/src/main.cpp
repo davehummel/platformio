@@ -26,7 +26,7 @@ ControlledCalc calc;
 
 ControlledLED led;
 
-ControlledRF24 rfClient(25, 10);
+//ControlledRF24 rfClient(25, 10);
 
 byte thermoIDs[3] = {0xAD, 0xC5, 0x48};
 ControlledThermometer thermo(2 /*pin 2*/, thermoIDs, 3 /* 2 devices*/);
@@ -66,10 +66,10 @@ void setup()
   controller.run(2, Controller::newString("Enable"), 'T');
 
   // Connect to the 4 radio devices
-  controller.run(2, Controller::newString("CONNECT A 1NOD"), 'R');
-  controller.run(2, Controller::newString("CONNECT B 2NOD"), 'R');
-  controller.run(2, Controller::newString("CONNECT C 3NOD"), 'R');
-  controller.run(2, Controller::newString("CONNECT D 4NOD"), 'R');
+  // controller.run(2, Controller::newString("CONNECT A 1NOD"), 'R');
+  // controller.run(2, Controller::newString("CONNECT B 2NOD"), 'R');
+  // controller.run(2, Controller::newString("CONNECT C 3NOD"), 'R');
+  // controller.run(2, Controller::newString("CONNECT D 4NOD"), 'R');
 
   // Signal startup is complete to listening computer
   controller.schedule(1, 2000, 0, false, 1, Controller::newString("B ZZZ 1 0"), 'Z', 1);
@@ -78,11 +78,10 @@ void setup()
 
   controller.schedule(5, 1000, 2000, false, 0, Controller::newString("B ZZZ 1"), 'P', 2);
 
-  controller.run(2, Controller::newString("D CAA 10"), 'R', 2);
-  controller.run(2, Controller::newString("D CBB 10"), 'R', 2);
+  // controller.run(2, Controller::newString("D CAA 10"), 'R', 2);
+  // controller.run(2, Controller::newString("D CBB 10"), 'R', 2);
 
   Serial1.println("Starting control loop");
-  Serial1.flush();
 }
 
 void loop()
