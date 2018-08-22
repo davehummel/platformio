@@ -59,7 +59,7 @@ void setup()
 
   controller.loadControlled('T', &thermo);
 
-  controller.loadControlled('R', &rfClient);
+  //controller.loadControlled('R', &rfClient);
 
   Serial1.println("Modules have started!!");
 
