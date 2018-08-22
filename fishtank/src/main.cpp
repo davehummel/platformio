@@ -26,7 +26,7 @@ ControlledCalc calc;
 
 ControlledLED led;
 
-//ControlledRF24 rfClient(25, 10);
+ControlledRF24 rfClient(25, 10);
 
 byte thermoIDs[3] = {0xAD, 0xC5, 0x48};
 ControlledThermometer thermo(2 /*pin 2*/, thermoIDs, 3 /* 2 devices*/);
@@ -59,7 +59,7 @@ void setup()
 
   controller.loadControlled('T', &thermo);
 
-  //controller.loadControlled('R', &rfClient);
+  controller.loadControlled('R', &rfClient);
 
   Serial1.println("Modules have started!!");
 
