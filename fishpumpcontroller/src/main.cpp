@@ -14,6 +14,9 @@ RF24Client rfClient(14, 10);
 #define RIGHT_PUMP 3
 #define TOPOFF_PUMP 18
 
+#define DEF_POWER_LEFT 85
+#define DEF_POWER_RIGHT 90
+
 byte clientName[5] = {DEFCLIENTNAME};
 
 double leftVal, rightVal;
@@ -43,11 +46,11 @@ void setup()
 
 // Initialize with topoff pump off and left and right at a very low power (but not off)
   digitalWrite(TOPOFF_PUMP, LOW);
-  analogWrite(LEFT_PUMP, 25);
-  analogWrite(RIGHT_PUMP, 25);
+  analogWrite(LEFT_PUMP, DEF_POWER_LEFT);
+  analogWrite(RIGHT_PUMP, DEF_POWER_RIGHT);
 
-  leftVal = 10;
-  rightVal = 10;
+  leftVal = DEF_POWER_LEFT;
+  rightVal = DEF_POWER_RIGHT;
   topoffVal = false;
 
   Serial.begin(115200);
