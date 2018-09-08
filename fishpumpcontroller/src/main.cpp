@@ -139,9 +139,9 @@ void loop()
   if (rfClient.getTimeSinceLastPing() > 10000)
   {
     Serial.println("Lost contact with controller!");
-    leftVal = 10;
+    leftVal = DEF_POWER_LEFT;
     rfClient.setValue(0, 10);
-    rightVal = 10;
+    rightVal = DEF_POWER_RIGHT;
     rfClient.setValue(1, 10);
     topoffVal = false;
     rfClient.setValue(2, 0);
