@@ -36,7 +36,7 @@ void reset(double input)
 void setup()
 {
 
-  analogWriteResolution(10);
+  analogWriteResolution(8);
   analogWriteFrequency(3, 46875);
   analogWriteFrequency(4, 46875);
 
@@ -92,8 +92,8 @@ void setPWMPump(uint8_t pin, double val)
   {
     val = 0;
   }
-  uint16_t mappedVal = val * 2.588; // make 10 bit but also adjust 12v down to 10v
-  analogWrite(pin, mappedVal);
+
+  analogWrite(pin, val);
 }
 
 void setDigitalPump(uint8_t pin, bool enabled)
@@ -182,6 +182,13 @@ void loop()
   setPWMPump(LEFT_PUMP, leftVal);
   setPWMPump(RIGHT_PUMP, rightVal);
   setDigitalPump(TOPOFF_PUMP, topoffVal);
+
+  Serial.print("Setting Left:");
+  Serial.print(leftVal);
+  Serial.print(" Right:");
+  Serial.print(rightVal);
+  Serial.print(" Topoff:");
+  Serial.println(topoffVal);
 
   if (Serial.available() >= 5)
   {
