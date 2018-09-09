@@ -103,7 +103,7 @@ void clocks_start(void) {
 }
 
 void gpio_init(void) {
- // nrf_gpio_range_cfg_output(9, 15);
+  nrf_gpio_cfg_input( 30,GPIO_PIN_CNF_PULL_Pullup);
   bsp_board_init(BSP_INIT_LEDS);
 }
 
@@ -172,8 +172,6 @@ int main(void) {
 
   gpio_init();
 
-  err_code = uart_init();
-  APP_ERROR_CHECK(err_code);
 
   //err_code = NRF_LOG_INIT(NULL);
   APP_ERROR_CHECK(err_code);
@@ -182,10 +180,12 @@ int main(void) {
 
   clocks_start();
 
+   err_code = uart_init();
+   APP_ERROR_CHECK(err_code);
+
   err_code = esb_init();
   APP_ERROR_CHECK(err_code);
 
-  //NRF_LOG_DEBUG("Enhanced ShockBurst Transmitter Example started.");
   printf("\r\nEnhanced ShockBurst Transmitter Example started.\r\n");
 
   while (true) {
@@ -195,9 +195,9 @@ int main(void) {
     if (nrf_esb_write_payload(&tx_payload) == NRF_SUCCESS) {
       // Toggle one of the LEDs.
       nrf_gpio_pin_write(LED_1, !(tx_payload.data[1] % 8 > 0 && tx_payload.data[1] % 8 <= 4));
-      nrf_gpio_pin_write(LED_2, !(tx_payload.data[1] % 8 > 1 && tx_payload.data[1] % 8 <= 5));
-      nrf_gpio_pin_write(LED_3, !(tx_payload.data[1] % 8 > 2 && tx_payload.data[1] % 8 <= 6));
-      nrf_gpio_pin_write(LED_4, !(tx_payload.data[1] % 8 > 3));
+//      nrf_gpio_pin_write(LED_2, !(tx_payload.data[1] % 8 > 1 && tx_payload.data[1] % 8 <= 5));
+//      nrf_gpio_pin_write(LED_3, !(tx_payload.data[1] % 8 > 2 && tx_payload.data[1] % 8 <= 6));
+//      nrf_gpio_pin_write(LED_4, !(tx_payload.data[1] % 8 > 3));
       tx_payload.data[1]++;
     } else {
       printf("Sending packet failed");

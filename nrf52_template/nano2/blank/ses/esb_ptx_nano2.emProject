@@ -1,6 +1,6 @@
 <!DOCTYPE CrossStudio_Project_File>
-<solution Name="esb_ptx_pca10040" target="8" version="2">
-  <project Name="esb_ptx_pca10040">
+<solution Name="esb_ptx_nano2" target="8" version="2">
+  <project Name="esb_ptx_nano2">
     <configuration
       Name="Common"
       arm_architecture="v7EM"
@@ -15,7 +15,7 @@
       arm_simulator_memory_simulation_parameter="RWX 00000000,00100000,FFFFFFFF;RWX 20000000,00010000,CDCDCDCD"
       arm_target_device_name="nRF52832_xxAA"
       arm_target_interface_type="SWD"
-      c_preprocessor_definitions="BOARD_PCA10040;BSP_DEFINES_ONLY;CONFIG_GPIO_AS_PINRESET;ESB_PRESENT;FLOAT_ABI_HARD;INITIALIZE_USER_SECTIONS;NO_VTOR_CONFIG;NRF52;NRF52832_XXAA;NRF52_PAN_74;"
+      c_preprocessor_definitions="BOARD_NANO2;BSP_DEFINES_ONLY;CONFIG_GPIO_AS_PINRESET;ESB_PRESENT;FLOAT_ABI_HARD;INITIALIZE_USER_SECTIONS;NO_VTOR_CONFIG;NRF52;NRF52832_XXAA;NRF52_PAN_74;"
       c_user_include_directories="../../../config;../../../boards;C:/dev/nRF5_SDK/components;C:/dev/nRF5_SDK/components/drivers_nrf/nrf_soc_nosd;C:/dev/nRF5_SDK/components/libraries/atomic;C:/dev/nRF5_SDK/components/libraries/balloc;C:/dev/nRF5_SDK/components/libraries/bsp;C:/dev/nRF5_SDK/components/libraries/delay;C:/dev/nRF5_SDK/components/libraries/experimental_section_vars;C:/dev/nRF5_SDK/components/libraries/fifo;C:/dev/nRF5_SDK/components/libraries/log;C:/dev/nRF5_SDK/components/libraries/log/src;C:/dev/nRF5_SDK/components/libraries/memobj;C:/dev/nRF5_SDK/components/libraries/ringbuf;C:/dev/nRF5_SDK/components/libraries/strerror;C:/dev/nRF5_SDK/components/libraries/uart;C:/dev/nRF5_SDK/components/libraries/util;C:/dev/nRF5_SDK/components/proprietary_rf/esb;C:/dev/nRF5_SDK/components/toolchain/cmsis/include;../../..;C:/dev/nRF5_SDK/external/fprintf;C:/dev/nRF5_SDK/external/segger_rtt;C:/dev/nRF5_SDK/integration/nrfx;C:/dev/nRF5_SDK/integration/nrfx/legacy;C:/dev/nRF5_SDK/modules/nrfx;C:/dev/nRF5_SDK/modules/nrfx/drivers/include;C:/dev/nRF5_SDK/modules/nrfx/hal;C:/dev/nRF5_SDK/modules/nrfx/mdk;../config"
       debug_register_definition_file="C:/dev/nRF5_SDK/modules/nrfx/mdk/nrf52.svd"
       debug_start_from_entry_point_symbol="No"
