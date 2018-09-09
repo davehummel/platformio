@@ -179,7 +179,7 @@ int main(void) {
  // NRF_LOG_DEFAULT_BACKENDS_INIT();
 
   clocks_start();
-
+  // Warning - this will fail on a Nano2 if uart tx is not hooked up (loop back wire works)
    err_code = uart_init();
    APP_ERROR_CHECK(err_code);
 
@@ -195,9 +195,11 @@ int main(void) {
     if (nrf_esb_write_payload(&tx_payload) == NRF_SUCCESS) {
       // Toggle one of the LEDs.
       nrf_gpio_pin_write(LED_1, !(tx_payload.data[1] % 8 > 0 && tx_payload.data[1] % 8 <= 4));
-//      nrf_gpio_pin_write(LED_2, !(tx_payload.data[1] % 8 > 1 && tx_payload.data[1] % 8 <= 5));
-//      nrf_gpio_pin_write(LED_3, !(tx_payload.data[1] % 8 > 2 && tx_payload.data[1] % 8 <= 6));
-//      nrf_gpio_pin_write(LED_4, !(tx_payload.data[1] % 8 > 3));
+      #ifdef LED_4
+      nrf_gpio_pin_write(LED_2, !(tx_payload.data[1] % 8 > 1 && tx_payload.data[1] % 8 <= 5));
+      nrf_gpio_pin_write(LED_3, !(tx_payload.data[1] % 8 > 2 && tx_payload.data[1] % 8 <= 6));
+      nrf_gpio_pin_write(LED_4, !(tx_payload.data[1] % 8 > 3));
+      #endif
       tx_payload.data[1]++;
     } else {
       printf("Sending packet failed");
