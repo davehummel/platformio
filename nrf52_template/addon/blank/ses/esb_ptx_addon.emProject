@@ -1,6 +1,6 @@
 <!DOCTYPE CrossStudio_Project_File>
-<solution Name="esb_ptx_teensyaddon" target="8" version="2">
-  <project Name="esb_ptx_teensyaddon">
+<solution Name="esb_ptx_addon" target="8" version="2">
+  <project Name="esb_ptx_addon">
     <configuration
       Name="Common"
       arm_architecture="v7EM"
@@ -15,15 +15,15 @@
       arm_simulator_memory_simulation_parameter="RWX 00000000,00100000,FFFFFFFF;RWX 20000000,00010000,CDCDCDCD"
       arm_target_device_name="nRF52832_xxAA"
       arm_target_interface_type="SWD"
-      c_preprocessor_definitions="BOARD_TEENSYADDON;BSP_DEFINES_ONLY;CONFIG_GPIO_AS_PINRESET;ESB_PRESENT;FLOAT_ABI_HARD;INITIALIZE_USER_SECTIONS;NO_VTOR_CONFIG;NRF52;NRF52832_XXAA;NRF52_PAN_74;"
-      c_user_include_directories="../../../config;../../../boards;C:/dev/nRF5_SDK/components;C:/dev/nRF5_SDK/components/drivers_nrf/nrf_soc_nosd;C:/dev/nRF5_SDK/components/libraries/atomic;C:/dev/nRF5_SDK/components/libraries/balloc;C:/dev/nRF5_SDK/components/libraries/bsp;C:/dev/nRF5_SDK/components/libraries/delay;C:/dev/nRF5_SDK/components/libraries/experimental_section_vars;C:/dev/nRF5_SDK/components/libraries/fifo;C:/dev/nRF5_SDK/components/libraries/log;C:/dev/nRF5_SDK/components/libraries/log/src;C:/dev/nRF5_SDK/components/libraries/memobj;C:/dev/nRF5_SDK/components/libraries/ringbuf;C:/dev/nRF5_SDK/components/libraries/strerror;C:/dev/nRF5_SDK/components/libraries/uart;C:/dev/nRF5_SDK/components/libraries/util;C:/dev/nRF5_SDK/components/proprietary_rf/esb;C:/dev/nRF5_SDK/components/toolchain/cmsis/include;../../..;C:/dev/nRF5_SDK/external/fprintf;C:/dev/nRF5_SDK/external/segger_rtt;C:/dev/nRF5_SDK/integration/nrfx;C:/dev/nRF5_SDK/integration/nrfx/legacy;C:/dev/nRF5_SDK/modules/nrfx;C:/dev/nRF5_SDK/modules/nrfx/drivers/include;C:/dev/nRF5_SDK/modules/nrfx/hal;C:/dev/nRF5_SDK/modules/nrfx/mdk;../config"
+      c_preprocessor_definitions="BOARD_ADDON;BSP_DEFINES_ONLY;CONFIG_GPIO_AS_PINRESET;ESB_PRESENT;FLOAT_ABI_HARD;INITIALIZE_USER_SECTIONS;NO_VTOR_CONFIG;NRF52;NRF52832_XXAA;NRF52_PAN_74;"
+      c_user_include_directories="../../../config;../../../boards;C:/dev/nRF5_SDK/components;C:/dev/nRF5_SDK/components/drivers_nrf/nrf_soc_nosd;C:/dev/nRF5_SDK/components/libraries/atomic;C:/dev/nRF5_SDK/components/libraries/balloc;C:/dev/nRF5_SDK/components/libraries/bsp;C:/dev/nRF5_SDK/components/libraries/delay;C:/dev/nRF5_SDK/components/libraries/experimental_section_vars;C:/dev/nRF5_SDK/components/libraries/fifo;C:/dev/nRF5_SDK/components/libraries/log;C:/dev/nRF5_SDK/components/libraries/log/src;C:/dev/nRF5_SDK/components/libraries/memobj;C:/dev/nRF5_SDK/components/libraries/ringbuf;C:/dev/nRF5_SDK/components/libraries/strerror;C:/dev/nRF5_SDK/components/libraries/uart;C:/dev/nRF5_SDK/components/libraries/util;C:/dev/nRF5_SDK/components/proprietary_rf/esb;C:/dev/nRF5_SDK/components/toolchain/cmsis/include;../../..;C:/dev/nRF5_SDK/external/fprintf;C:/dev/nRF5_SDK/external/segger_rtt;C:/dev/nRF5_SDK/integration/nrfx;C:/dev/nRF5_SDK/integration/nrfx/legacy;C:/dev/nRF5_SDK/modules/nrfx;C:/dev/nRF5_SDK/modules/nrfx/drivers/include;C:/dev/nRF5_SDK/modules/nrfx/hal;C:/dev/nRF5_SDK/modules/nrfx/mdk;../config;C:/dev/embedded_libraries/nrf_arduino;C:/dev/embedded_libraries/nrf_arduino/VL53L0X"
       debug_register_definition_file="C:/dev/nRF5_SDK/modules/nrfx/mdk/nrf52.svd"
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
       gcc_debugging_level="Level 3"
       gcc_entry_point="Reset_Handler"
       linker_output_format="hex"
-      linker_printf_fmt_level="long"`
+      linker_printf_fmt_level="long"
       linker_printf_width_precision_supported="Yes"
       linker_section_placement_file="flash_placement.xml"
       linker_section_placement_macros="FLASH_PH_START=0x0;FLASH_PH_SIZE=0x80000;RAM_PH_START=0x20000000;RAM_PH_SIZE=0x10000;FLASH_START=0x0;FLASH_SIZE=0x80000;RAM_START=0x20000000;RAM_SIZE=0x10000"
@@ -69,7 +69,7 @@
       <file file_name="C:/dev/nRF5_SDK/modules/nrfx/drivers/src/nrfx_uarte.c" />
     </folder>
     <folder Name="Application">
-      <file file_name="../../../main.c" />
+      <file file_name="../../../main.cpp" />
       <file file_name="../config/sdk_config.h" />
     </folder>
     <folder Name="nRF_Segger_RTT">
@@ -84,6 +84,14 @@
     </folder>
     <folder Name="nRF_Properitary_RF">
       <file file_name="C:/dev/nRF5_SDK/components/proprietary_rf/esb/nrf_esb.c" />
+    </folder>
+	<folder Name="arduino">
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/Wire_nRF52.cpp" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/Print.cpp" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/RingBuffer.cpp" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/Stream.cpp" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/delay.c" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/VL53L0X/nrf_VL53L0X.cpp" />
     </folder>
   </project>
   <configuration

@@ -37,25 +37,32 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-#include "nrf.h"
-#include "sdk_common.h"
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
+
+#include "Wire.h"
 #include "app_uart.h"
 #include "app_util.h"
 #include "boards.h"
+#include "bsp.h"
+#include "delay.h"
+#include "nrf.h"
+#include "nrf_VL53L0X.h"
 #include "nrf_delay.h"
 #include "nrf_error.h"
 #include "nrf_esb.h"
 #include "nrf_esb_error_codes.h"
 #include "nrf_gpio.h"
 #include "nrf_uart.h"
-#include "bsp.h"
+#include "sdk_common.h"
 
-//#include "nrf_log.h"
-//#include "nrf_log_ctrl.h"
-//#include "nrf_log_default_backends.h"
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
+#include "nrf_log_default_backends.h"
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
+
+static TwoWire Wire(NRF_TWIM1, NRF_TWIS1, SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1_IRQn, SDA_PIN_NUMBER, SCL_PIN_NUMBER);
 
 #define MAX_TEST_DATA_BYTES (15U) /**< max number of test bytes to be used for tx and rx. */
 #define UART_TX_BUF_SIZE 256      /**< UART TX buffer size. */
@@ -69,6 +76,7 @@ void uart_error_handle(app_uart_evt_t *p_event) {
   }
 }
 
+// Note had to modiy sdk to have matching order of parameters to make this work.
 static nrf_esb_payload_t tx_payload = NRF_ESB_CREATE_PAYLOAD(0, 0x01, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00);
 
 static nrf_esb_payload_t rx_payload;
@@ -76,18 +84,18 @@ static nrf_esb_payload_t rx_payload;
 void nrf_esb_event_handler(nrf_esb_evt_t const *p_event) {
   switch (p_event->evt_id) {
   case NRF_ESB_EVENT_TX_SUCCESS:
-    printf("TX SUCCESS EVENT");
+    NRF_LOG_DEBUG("TX SUCCESS EVENT\n");
     break;
   case NRF_ESB_EVENT_TX_FAILED:
-    printf("TX FAILED EVENT");
+    NRF_LOG_DEBUG("TX FAILED EVENT\n");
     (void)nrf_esb_flush_tx();
     (void)nrf_esb_start_tx();
     break;
   case NRF_ESB_EVENT_RX_RECEIVED:
-    printf("RX RECEIVED EVENT");
+    NRF_LOG_DEBUG("RX RECEIVED EVENT\n");
     while (nrf_esb_read_rx_payload(&rx_payload) == NRF_SUCCESS) {
       if (rx_payload.length > 0) {
-        printf("RX RECEIVED PAYLOAD");
+        NRF_LOG_DEBUG("RX RECEIVED PAYLOAD\n");
       }
     }
     break;
@@ -103,11 +111,11 @@ void clocks_start(void) {
 }
 
 void gpio_init(void) {
-  nrf_gpio_cfg_input( 30,GPIO_PIN_CNF_PULL_Pullup);
   bsp_board_init(BSP_INIT_LEDS);
+  nrf_gpio_range_cfg_input( NRF_GPIO_PIN_MAP(0,9), NRF_GPIO_PIN_MAP(0,10),NRF_GPIO_PIN_PULLUP);
 }
 
-uint32_t uart_init(void) {
+uint32_t  uart_init(void) {
   uint32_t err_code;
 
   const app_uart_comm_params_t comm_params =
@@ -116,7 +124,7 @@ uint32_t uart_init(void) {
     TX_PIN_NUMBER,
     RTS_PIN_NUMBER,
     CTS_PIN_NUMBER,
-    APP_UART_FLOW_CONTROL_ENABLED,
+    APP_UART_FLOW_CONTROL_DISABLED,
     false,
 #if defined(UART_PRESENT)
     NRF_UART_BAUDRATE_115200
@@ -167,42 +175,70 @@ uint32_t esb_init(void) {
   return err_code;
 }
 
+void i2c_init() {
+  init_clock();
+  Wire.setTimeout(2000);
+  Wire.begin();
+}
+
 int main(void) {
   ret_code_t err_code;
 
   gpio_init();
 
+  i2c_init();
 
-  //err_code = NRF_LOG_INIT(NULL);
+  VL53L0X sensor;
+  sensor.setWire(&Wire);
+  sensor.setMeasurementTimingBudget(200000); //= 200ms, def is 33
+  sensor.init();
+  sensor.startContinuous(499);
+
+  err_code = NRF_LOG_INIT(NULL);
   APP_ERROR_CHECK(err_code);
 
- // NRF_LOG_DEFAULT_BACKENDS_INIT();
+  NRF_LOG_DEFAULT_BACKENDS_INIT();
 
   clocks_start();
   // Warning - this will fail on a Nano2 if uart tx is not hooked up (loop back wire works)
-   err_code = uart_init();
-   APP_ERROR_CHECK(err_code);
+//
+  err_code = uart_init();
+  APP_ERROR_CHECK(err_code);
 
   err_code = esb_init();
   APP_ERROR_CHECK(err_code);
 
   printf("\r\nEnhanced ShockBurst Transmitter Example started.\r\n");
+      NRF_LOG_ERROR("Start!\n");
 
   while (true) {
-    printf("Transmitting packet %02x", tx_payload.data[1]);
-
+    printf("Transmitting packet %02x\r\n", tx_payload.data[1]);
+    NRF_LOG_ERROR(".");
     tx_payload.noack = false;
     if (nrf_esb_write_payload(&tx_payload) == NRF_SUCCESS) {
       // Toggle one of the LEDs.
       nrf_gpio_pin_write(LED_1, !(tx_payload.data[1] % 8 > 0 && tx_payload.data[1] % 8 <= 4));
-      #ifdef LED_4
+#ifdef LED_4
       nrf_gpio_pin_write(LED_2, !(tx_payload.data[1] % 8 > 1 && tx_payload.data[1] % 8 <= 5));
       nrf_gpio_pin_write(LED_3, !(tx_payload.data[1] % 8 > 2 && tx_payload.data[1] % 8 <= 6));
       nrf_gpio_pin_write(LED_4, !(tx_payload.data[1] % 8 > 3));
-      #endif
+#endif
       tx_payload.data[1]++;
     } else {
-      printf("Sending packet failed");
+      printf("Sending packet failed\r\n");
+    }
+
+    if (tx_payload.data[1] % 16 == 0) {
+      uint16_t distance = sensor.readRangeContinuousMillimeters(false);
+      if (distance == 65535) {
+          nrf_delay_us(500000);
+        //failed once;
+        printf("Failed Read\r\n");
+      } else {
+
+        // all good!
+        printf("Got Distance:%" PRIu16 "\r\n", distance);
+      }
     }
 
     nrf_delay_us(50000);

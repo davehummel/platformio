@@ -49,9 +49,9 @@ extern "C" {
 // LEDs definitions for PCA10040
 #define LEDS_NUMBER    1
 
-#define LED_START      11
-#define LED_1          11
-#define LED_STOP       11
+#define LED_START      18
+#define LED_1          18
+#define LED_STOP       18
 
 #define LEDS_ACTIVE_STATE 1
 
@@ -61,15 +61,14 @@ extern "C" {
 
 #define BSP_LED_0      LED_1
 
-// Warning - you need to have an active connection to the RX pin or it will fail to init.  Looping rx to tx works
-#define RX_PIN_NUMBER  30
-#define TX_PIN_NUMBER  29
-#define CTS_PIN_NUMBER 28
-#define RTS_PIN_NUMBER 2
+#define RX_PIN_NUMBER  16
+#define TX_PIN_NUMBER  17
+#define CTS_PIN_NUMBER 19
+#define RTS_PIN_NUMBER 20
 #define HWFC           true
 
-#define SDA_PIN_NUMBER 28
-#define SCL_PIN_NUMBER 2
+#define SDA_PIN_NUMBER 19
+#define SCL_PIN_NUMBER 20
 
 #ifdef __cplusplus
 }

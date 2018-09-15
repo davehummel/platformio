@@ -16,10 +16,12 @@
       arm_target_device_name="nRF52840_xxAA"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="BOARD_PCA10059;BSP_DEFINES_ONLY;CONFIG_GPIO_AS_PINRESET;ESB_PRESENT;FLOAT_ABI_HARD;INITIALIZE_USER_SECTIONS;NO_VTOR_CONFIG;NRF52840_XXAA;"
-      c_user_include_directories="../../../config;../../../boards;C:/dev/nRF5_SDK/components;C:/dev/nRF5_SDK/components/drivers_nrf/nrf_soc_nosd;C:/dev/nRF5_SDK/components/libraries/atomic;C:/dev/nRF5_SDK/components/libraries/balloc;C:/dev/nRF5_SDK/components/libraries/bsp;C:/dev/nRF5_SDK/components/libraries/delay;C:/dev/nRF5_SDK/components/libraries/experimental_section_vars;C:/dev/nRF5_SDK/components/libraries/fifo;C:/dev/nRF5_SDK/components/libraries/log;C:/dev/nRF5_SDK/components/libraries/log/src;C:/dev/nRF5_SDK/components/libraries/memobj;C:/dev/nRF5_SDK/components/libraries/ringbuf;C:/dev/nRF5_SDK/components/libraries/strerror;C:/dev/nRF5_SDK/components/libraries/uart;C:/dev/nRF5_SDK/components/libraries/util;C:/dev/nRF5_SDK/components/proprietary_rf/esb;C:/dev/nRF5_SDK/components/toolchain/cmsis/include;../../..;C:/dev/nRF5_SDK/external/fprintf;C:/dev/nRF5_SDK/external/segger_rtt;C:/dev/nRF5_SDK/integration/nrfx;C:/dev/nRF5_SDK/integration/nrfx/legacy;C:/dev/nRF5_SDK/modules/nrfx;C:/dev/nRF5_SDK/modules/nrfx/drivers/include;C:/dev/nRF5_SDK/modules/nrfx/hal;C:/dev/nRF5_SDK/modules/nrfx/mdk;../config"
+      c_user_include_directories="../../../config;../../../boards;C:/dev/nRF5_SDK/components;C:/dev/nRF5_SDK/components/drivers_nrf/nrf_soc_nosd;C:/dev/nRF5_SDK/components/libraries/atomic;C:/dev/nRF5_SDK/components/libraries/balloc;C:/dev/nRF5_SDK/components/libraries/bsp;C:/dev/nRF5_SDK/components/libraries/delay;C:/dev/nRF5_SDK/components/libraries/experimental_section_vars;C:/dev/nRF5_SDK/components/libraries/fifo;C:/dev/nRF5_SDK/components/libraries/log;C:/dev/nRF5_SDK/components/libraries/log/src;C:/dev/nRF5_SDK/components/libraries/memobj;C:/dev/nRF5_SDK/components/libraries/ringbuf;C:/dev/nRF5_SDK/components/libraries/strerror;C:/dev/nRF5_SDK/components/libraries/uart;C:/dev/nRF5_SDK/components/libraries/util;C:/dev/nRF5_SDK/components/proprietary_rf/esb;C:/dev/nRF5_SDK/components/toolchain/cmsis/include;../../..;C:/dev/nRF5_SDK/external/fprintf;C:/dev/nRF5_SDK/external/segger_rtt;C:/dev/nRF5_SDK/integration/nrfx;C:/dev/nRF5_SDK/integration/nrfx/legacy;C:/dev/nRF5_SDK/modules/nrfx;C:/dev/nRF5_SDK/modules/nrfx/drivers/include;C:/dev/nRF5_SDK/modules/nrfx/hal;C:/dev/nRF5_SDK/modules/nrfx/mdk;../config;C:/dev/embedded_libraries/nrf_arduino;C:/dev/embedded_libraries/nrf_arduino/VL53L0X"
       debug_register_definition_file="C:/dev/nRF5_SDK/modules/nrfx/mdk/nrf52840.svd"
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
+      gcc_c_language_standard="gnu11"
+      gcc_cplusplus_language_standard="gnu++11"
       gcc_debugging_level="Level 3"
       gcc_entry_point="Reset_Handler"
       linker_output_format="hex"
@@ -69,7 +71,7 @@
       <file file_name="C:/dev/nRF5_SDK/modules/nrfx/drivers/src/nrfx_uarte.c" />
     </folder>
     <folder Name="Application">
-      <file file_name="../../../main.c" />
+      <file file_name="../../../main.cpp" />
       <file file_name="../config/sdk_config.h" />
     </folder>
     <folder Name="nRF_Segger_RTT">
@@ -84,6 +86,14 @@
     </folder>
     <folder Name="nRF_Properitary_RF">
       <file file_name="C:/dev/nRF5_SDK/components/proprietary_rf/esb/nrf_esb.c" />
+    </folder>
+    <folder Name="arduino">
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/Wire_nRF52.cpp" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/Print.cpp" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/RingBuffer.cpp" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/Stream.cpp" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/delay.c" />
+      <file file_name="C:/dev/embedded_libraries/nrf_arduino/VL53L0X/nrf_VL53L0X.cpp" />
     </folder>
   </project>
   <configuration

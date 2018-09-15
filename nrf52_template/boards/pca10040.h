@@ -92,6 +92,9 @@ extern "C" {
 #define RTS_PIN_NUMBER 5
 #define HWFC           true
 
+#define SDA_PIN_NUMBER 26
+#define SCL_PIN_NUMBER 27
+
 #define SPIS_MISO_PIN   28  // SPI MISO signal.
 #define SPIS_CSN_PIN    12  // SPI CSN signal.
 #define SPIS_MOSI_PIN   25  // SPI MOSI signal.

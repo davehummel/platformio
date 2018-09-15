@@ -86,15 +86,18 @@ extern "C" {
 
 #define BSP_SELF_PINRESET_PIN NRF_GPIO_PIN_MAP(0,19)
 
+#define SDA_PIN_NUMBER NRF_GPIO_PIN_MAP(0,13)
+#define SCL_PIN_NUMBER NRF_GPIO_PIN_MAP(0,15)
 
-#define RX_PIN_NUMBER         NRF_GPIO_PIN_MAP(0,10)
-#define TX_PIN_NUMBER         NRF_GPIO_PIN_MAP(0,9)
+#define RX_PIN_NUMBER         NRF_GPIO_PIN_MAP(0,17)
+#define TX_PIN_NUMBER         NRF_GPIO_PIN_MAP(0,20)
 #define CTS_PIN_NUMBER         NRF_GPIO_PIN_MAP(1,10)
 #define RTS_PIN_NUMBER         NRF_GPIO_PIN_MAP(1,13)
-#define HWFC           true
+#define HWFC           false
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif // PCA10059_H
+  

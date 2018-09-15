@@ -44,8 +44,8 @@
 #include "nordic_common.h"
 
 
-#if defined(BOARD_TEENSYADDON)
-  #include "teensyaddon.h"
+#if defined(BOARD_ADDON)
+  #include "addon.h"
 #elif defined(BOARD_NANO2)
   #include "nano2.h"
 #elif defined(BOARD_PCA10040)
