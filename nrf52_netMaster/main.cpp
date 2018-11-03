@@ -76,44 +76,16 @@
 EsbRadio Radio;
 EsbMesh Mesh;
 
-//Timer code below
-//APP_TIMER_DEF(m_led_a_timer_id);
+static void connection_handler(EsbMesh::ConnectionEvent p_event) {
+switch (p_event){
+  case EsbMesh::ConnectionEvent::CONNECT_SUCCESS:{
+      NRF_LOG_INFO("Mesh Connect Success!!!!!!!!.");
+           bsp_board_led_on(0);
+  }break;
 
-static uint8_t data[8] = {0x01, 0x00, 0x00, 0x00, 0x11, 0x00, 0x00, 0x00};
-
-static uint32_t counter = 0;
-
-// Timeout handler for the repeated timer
-//static void timer_a_handler(void *p_context) {
-//
-//  counter++;
-//  if (counter % 16 == 0) {
-//    Radio.switchModes(NRF_ESB_MODE_PTX);
-//  }
-//  if (counter % 16 < 8) {
-//    nrf_gpio_pin_write(LED_1, (data[1]++) % 2);
-//    APP_ERROR_CHECK(Radio.transmit(0, 8, data));
-//  }
-//  if (counter % 16 == 8) {
-//    APP_ERROR_CHECK(Radio.switchModes(NRF_ESB_MODE_PRX));
-//  }
-//  if (counter % 16 >= 8) {
-//    nrf_gpio_pin_write(LED_3, (data[1]++) % 2);
-//    APP_ERROR_CHECK(Radio.transmit(0, 8, data));
-//  }
-//}
-
-// Create timers
-//static void create_timers() {
-//  uint32_t err_code;
-//
-//  // Create timers
-//  err_code = app_timer_create(&m_led_a_timer_id,
-//      APP_TIMER_MODE_REPEATED,
-//      timer_a_handler);
-//  APP_ERROR_CHECK(err_code);
-//}
-// Timer code abouve
+}
+  
+}
 
 static void sleep_handler(void) {
   __WFE();
@@ -143,18 +115,6 @@ NRF_SERIAL_CONFIG_DEF(serial_config, NRF_SERIAL_MODE_IRQ,
 
 NRF_SERIAL_UART_DEF(serial_uart, 0);
 
-static nrf_esb_payload_t rx_payload;
-
-void nrf_esb_event_handler(nrf_esb_evt_t const *p_event) {
-
-  if (nrf_esb_read_rx_payload(&rx_payload) == NRF_SUCCESS) {
-    // Set LEDs identical to the ones on the PTX.
-    nrf_gpio_pin_write(LED_2, (rx_payload.data[1]++) % 2);
-    (void)nrf_serial_write(&serial_uart, rx_payload.data, rx_payload.length, NULL, 0);
-    (void)nrf_serial_flush(&serial_uart, 0);
-    NRF_LOG_INFO("Receiving packet: %02x", rx_payload.data[1]);
-  }
-}
 
 int main(void) {
 
@@ -192,17 +152,7 @@ int main(void) {
 
   NRF_LOG_INFO("Serial Enabled enabled.");
 
-//  {
-//    uint8_t base_addr_0[4] = {0xE7, 0xE7, 0xE7, 0xE7};
-//    uint8_t base_addr_1[4] = {0xC2, 0xC2, 0xC2, 0xC2};
-//    uint8_t addr_prefix[8] = {0xE7, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8};
-//    APP_ERROR_CHECK(Radio.setPrimaryAddr(base_addr_0));
-//    APP_ERROR_CHECK(Radio.setSecondaryAddr(base_addr_1));
-//    APP_ERROR_CHECK(Radio.setAllAddrPrefix(8, addr_prefix));
-//  }
-//  Radio.setReceivedListener(nrf_esb_event_handler);
-//
-//  Radio.init(NRF_ESB_MODE_PTX);
+  Mesh.setConnectionEventHandler(connection_handler);
 
   ret = Mesh.join(123,EsbMesh::ROLE_HIGH_POWER);
 
