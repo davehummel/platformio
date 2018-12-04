@@ -3,7 +3,7 @@
 #include "dh_logger.h"
 #include "dh_controller.h"
 #include "OneWire.h"
-#include <SPI.h>
+#include "SPI.h"
 #include "RF24.h"
 
 //#include "ILI9341_t3.h"
@@ -79,8 +79,8 @@ void setup()
   controller.schedule(5, 1000, 2000, false, 0, Controller::newString("B ZZZ 1"), 'P', 2);
 
 // Setting Default pump speed to 80
-  controller.run(2, Controller::newString("D CAA 80"), 'R', 2);
-  controller.run(2, Controller::newString("D CBB 80"), 'R', 2);
+  controller.run(2, Controller::newString("D CAA 100"), 'R', 2);
+  controller.run(2, Controller::newString("D CBB 100"), 'R', 2);
 
   Serial1.println("Starting control loop");
 }
