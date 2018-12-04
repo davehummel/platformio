@@ -49,9 +49,12 @@ void setup()
   analogWrite(LEFT_PUMP, DEF_POWER_LEFT);
   analogWrite(RIGHT_PUMP, DEF_POWER_RIGHT);
 
-  leftVal = DEF_POWER_LEFT;
-  rightVal = DEF_POWER_RIGHT;
+    leftVal = DEF_POWER_LEFT;
+    rfClient.setValue(0, DEF_POWER_LEFT);
+    rightVal = DEF_POWER_RIGHT;
+    rfClient.setValue(1, DEF_POWER_RIGHT);
   topoffVal = false;
+      rfClient.setValue(2, 0);
 
   Serial.begin(115200);
 
@@ -140,9 +143,9 @@ void loop()
   {
     Serial.println("Lost contact with controller!");
     leftVal = DEF_POWER_LEFT;
-    rfClient.setValue(0, 10);
+    rfClient.setValue(0, DEF_POWER_LEFT);
     rightVal = DEF_POWER_RIGHT;
-    rfClient.setValue(1, 10);
+    rfClient.setValue(1, DEF_POWER_RIGHT);
     topoffVal = false;
     rfClient.setValue(2, 0);
   }
