@@ -76,7 +76,7 @@ void setup()
 
   // controller.run(2, Controller::newString("BLK Z 13 1000"), 'P');
 
-  controller.schedule(5, 1000, 2000, false, 0, Controller::newString("B ZZZ 1"), 'P', 2);
+  //controller.schedule(5, 1000, 2000, false, 0, Controller::newString("B ZZZ 1"), 'P', 2);
 
 
   Serial1.println("Starting control loop");
