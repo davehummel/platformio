@@ -124,7 +124,7 @@ void loop()
   rfClient.listen();
   delay(100);
 
-  if (topoffVal == true && millisSinceTopoffFalse > 2000)
+  if (topoffVal == true && millisSinceTopoffFalse > 4000)
   {
     topoffVal = false;
     rfClient.setValue(2, 0);
