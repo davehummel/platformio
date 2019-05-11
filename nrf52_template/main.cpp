@@ -210,6 +210,7 @@ int main(void) {
 
   printf("\r\nEnhanced ShockBurst Transmitter Example started.\r\n");
       NRF_LOG_ERROR("Start!\n");
+      uint8_t cal;
 
   while (true) {
     printf("Transmitting packet %02x\r\n", tx_payload.data[1]);
