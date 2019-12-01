@@ -27,13 +27,13 @@ PubSubClient mqttClient(wificlient);
 
 #define CYCLE_TIME_SEC 60
 
-
 #define TOP_OFF_DUR_SEC 600
 #define ALK_CALC_RUN_DUR_MS 5600
 
 #define ALK_ADD_ONCE_PER_CYCLES 240
-#define CALC_ADD_ONCE_PER_CYCLES 360
-#define CALC_ALK_OFFSET 1
+#define CALC_ADD_ONCE_PER_CYCLES 220
+#define CALC_OFFSET 15
+#define ALK_OFFSET 10
 
 // tstrSystemTime WiFiClass::getSystemTime()
 // {
@@ -268,7 +268,7 @@ void loop()
   bool isWaterLow = digitalRead(LEVEL1IN);
   bool isWaterHigh = !digitalRead(LEVEL2IN);
 
-  bool alkOn = (runCount % ALK_ADD_ONCE_PER_CYCLES == 0);
+  bool alkOn = (runCount % ALK_ADD_ONCE_PER_CYCLES == ALK_OFFSET);
 
   if (alkOn)
   {
@@ -283,7 +283,7 @@ void loop()
     addAlk(false);
   }
 
-  bool calcOn = (runCount % ALK_ADD_ONCE_PER_CYCLES == CALC_ALK_OFFSET);
+  bool calcOn = (runCount % CALC_ADD_ONCE_PER_CYCLES == CALC_OFFSET);
 
   if (calcOn)
   {
@@ -329,9 +329,9 @@ void loop()
   time_t t = usCT.toLocal(now());
 
   if (!fillOn)
-    sprintf(buffer, "Time: %d/%d/%d %.2d:%.2d:%.2d Water Low: %d Water High: %d  Topoff Off! Alk : %d Calc : %d", day(t), month(t), year(t), hour(t), minute(t), second(t), isWaterLow, isWaterHigh, alkOn, calcOn);
+    sprintf(buffer, "Time: %d/%d/%d %.2d:%.2d:%.2d Signal: %ld Water Low: %d Water High: %d  Topoff Off! Alk : %d Calc : %d", day(t), month(t), year(t), hour(t), minute(t), second(t), WiFi.RSSI(), isWaterLow, isWaterHigh, alkOn, calcOn);
   else
-    sprintf(buffer, "Time: %d/%d/%d %.2d:%.2d:%.2d Water Low: %d Water High: %d  Topoff On for %lu Alk : %d Calc : %d", day(t), month(t), year(t), hour(t), minute(t), second(t), isWaterLow, isWaterHigh, TOP_OFF_DUR_SEC * 1000 - topoffTimer, alkOn, calcOn);
+    sprintf(buffer, "Time: %d/%d/%d %.2d:%.2d:%.2d Signal %ld Water Low: %d Water High: %d  Topoff On for %lu Alk : %d Calc : %d", day(t), month(t), year(t), hour(t), minute(t), second(t), WiFi.RSSI(), isWaterLow, isWaterHigh, TOP_OFF_DUR_SEC * 1000 - topoffTimer, alkOn, calcOn);
 
   Serial.println(buffer);
 
@@ -352,9 +352,12 @@ void loop()
     Serial.println(" = Woa too long");
   }
 
-  while (loopTime < CYCLE_TIME_SEC * 1000){
-    delay(100);
+  mqttClient.loop();
+
+  while (loopTime < CYCLE_TIME_SEC * 1000)
+  {
   }
+
   mqttClient.loop();
   loopTime = 0;
   runCount++;
