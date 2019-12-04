@@ -31,7 +31,7 @@ PubSubClient mqttClient(wificlient);
 #define ALK_CALC_RUN_DUR_MS 5600
 
 #define ALK_ADD_ONCE_PER_CYCLES 240
-#define CALC_ADD_ONCE_PER_CYCLES 220
+#define CALC_ADD_ONCE_PER_CYCLES 150
 #define CALC_OFFSET 15
 #define ALK_OFFSET 10
 
@@ -86,8 +86,10 @@ time_t requestTime()
 
     return makeTime(tm);
   }
-  setSyncInterval(5);
-  return 0;
+  Serial.println("Setting time to year 2000");
+  setSyncInterval(30);
+  return 946706400
+;
 }
 
 void printMacAddress(byte mac[])
@@ -154,7 +156,10 @@ void wifiConnect()
   {
     Serial.println("WiFi shield not present");
   }
-
+  
+  String fv = WiFi.firmwareVersion();
+  Serial.print("Firmware version installed: ");
+  Serial.println(fv);
   // attempt to connect to WiFi network:
   if (status != WL_CONNECTED)
   {
@@ -173,11 +178,10 @@ void wifiConnect()
       Serial.println("You're connected to the network");
       printCurrentNet();
       printWiFiData();
-      Serial.println("waiting for wifi time data to load");
+
       WiFi.getSystemTime();
-      delay(10000);
       setSyncProvider(requestTime);
-      setSyncInterval(5);
+      setSyncInterval(30);
     }
   }
 }
@@ -234,9 +238,7 @@ void setup()
   pinMode(LEVEL1IN, INPUT_PULLDOWN);
   pinMode(LEVEL2IN, INPUT_PULLDOWN);
 
-  setTime(0);
-
-  WiFi.setPins(10, 8, 9, 7);
+  WiFi.setPins(10, 8, 7, 9);
   mqttClient.setServer("192.168.1.3", 1883);
 
   loopTime = 0;
@@ -329,9 +331,9 @@ void loop()
   time_t t = usCT.toLocal(now());
 
   if (!fillOn)
-    sprintf(buffer, "Time: %d/%d/%d %.2d:%.2d:%.2d Signal: %ld Water Low: %d Water High: %d  Topoff Off! Alk : %d Calc : %d", day(t), month(t), year(t), hour(t), minute(t), second(t), WiFi.RSSI(), isWaterLow, isWaterHigh, alkOn, calcOn);
+    sprintf(buffer, "Time: %d/%d/%d %.2d:%.2d:%.2d Signal: %ld Water Low: %d Water High: %d  Topoff Off! Alk : %d Calc : %d", month(t), day(t), year(t), hour(t), minute(t), second(t), WiFi.RSSI(), isWaterLow, isWaterHigh, alkOn, calcOn);
   else
-    sprintf(buffer, "Time: %d/%d/%d %.2d:%.2d:%.2d Signal %ld Water Low: %d Water High: %d  Topoff On for %lu Alk : %d Calc : %d", day(t), month(t), year(t), hour(t), minute(t), second(t), WiFi.RSSI(), isWaterLow, isWaterHigh, TOP_OFF_DUR_SEC * 1000 - topoffTimer, alkOn, calcOn);
+    sprintf(buffer, "Time: %d/%d/%d %.2d:%.2d:%.2d Signal %ld Water Low: %d Water High: %d  Topoff On for %lu Alk : %d Calc : %d", month(t), day(t), year(t), hour(t), minute(t), second(t), WiFi.RSSI(), isWaterLow, isWaterHigh, TOP_OFF_DUR_SEC * 1000 - topoffTimer, alkOn, calcOn);
 
   Serial.println(buffer);
 
