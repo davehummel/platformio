@@ -17,21 +17,21 @@ int status = WL_IDLE_STATUS;  // the WiFi radio's status
 WiFiClient wificlient;
 PubSubClient mqttClient(wificlient);
 
-#define RELAY1 23
-#define RELAY2 22
-#define RELAY3 21
-#define RELAY4 20
+#define RELAY1 14
+#define RELAY2 15
+#define RELAY3 16
 
-#define LEVEL1IN 2
-#define LEVEL2IN 3
+
+#define LEVEL1IN 23
+#define LEVEL2IN 22
 
 #define CYCLE_TIME_SEC 60
 
 #define TOP_OFF_DUR_SEC 600
 #define ALK_CALC_RUN_DUR_MS 5600
 
-#define ALK_ADD_ONCE_PER_CYCLES 240
-#define CALC_ADD_ONCE_PER_CYCLES 150
+#define ALK_ADD_ONCE_PER_CYCLES 260
+#define CALC_ADD_ONCE_PER_CYCLES 100
 #define CALC_OFFSET 15
 #define ALK_OFFSET 10
 
@@ -88,8 +88,7 @@ time_t requestTime()
   }
   Serial.println("Setting time to year 2000");
   setSyncInterval(30);
-  return 946706400
-;
+  return 946706400;
 }
 
 void printMacAddress(byte mac[])
@@ -228,12 +227,10 @@ void setup()
   pinMode(RELAY1, OUTPUT);
   pinMode(RELAY2, OUTPUT);
   pinMode(RELAY3, OUTPUT);
-  pinMode(RELAY4, OUTPUT);
 
-  digitalWrite(RELAY1, HIGH);
-  digitalWrite(RELAY2, HIGH);
-  digitalWrite(RELAY3, HIGH);
-  digitalWrite(RELAY4, HIGH);
+  digitalWrite(RELAY1, LOW);
+  digitalWrite(RELAY2, LOW);
+  digitalWrite(RELAY3, LOW);
 
   pinMode(LEVEL1IN, INPUT_PULLDOWN);
   pinMode(LEVEL2IN, INPUT_PULLDOWN);
@@ -246,17 +243,17 @@ void setup()
 
 void addAlk(bool enable)
 {
-  digitalWrite(RELAY2, !enable);
+  digitalWrite(RELAY2, enable);
 }
 
 void addCalc(bool enable)
 {
-  digitalWrite(RELAY3, !enable);
+  digitalWrite(RELAY3, enable);
 }
 
 void openTopoff(bool enable)
 {
-  digitalWrite(RELAY1, !enable);
+  digitalWrite(RELAY1, enable);
 }
 
 elapsedMillis topoffTimer = TOP_OFF_DUR_SEC * 1000 + 1;
